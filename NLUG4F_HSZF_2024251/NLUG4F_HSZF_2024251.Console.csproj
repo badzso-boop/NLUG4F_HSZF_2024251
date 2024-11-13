@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NLUG4F_HSZF_2024251.Applicaion\NLUG4F_HSZF_2024251.Applicaion.csproj" />
+    <ProjectReference Include="..\NLUG4F_HSZF_2024251.Model\NLUG4F_HSZF_2024251.Model.csproj" />
+    <ProjectReference Include="..\NLUG4F_HSZF_2024251.Persistence.MsSql\NLUG4F_HSZF_2024251.Persistence.MsSql.csproj" />
+  </ItemGroup>
+
+</Project>
