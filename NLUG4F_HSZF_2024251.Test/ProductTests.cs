@@ -12,13 +12,15 @@ namespace NLUG4F_HSZF_2024251.Test
     {
         private HouseHoldDbContext _context;
         private ProductDataProvider _productDataProvider;
+        private PersonDataProvider _dataProvider;
         private Product product = new Product { Name = "Test Product", Quantity = 10, CriticalLevel = 5, BestBefore = DateTime.Today.AddDays(1), StoreInFridge = false };
 
         [TestInitialize]
         public void Setup()
         {
             _context = new HouseHoldDbContext();
-            _productDataProvider = new ProductDataProvider(_context);
+            _dataProvider = new PersonDataProvider(_context);
+            _productDataProvider = new ProductDataProvider(_context,_dataProvider);
         }
 
         [TestMethod]
