@@ -239,7 +239,7 @@ Az **Application** projekt tartalmazza az üzleti logikát és a különböző a
 A kapcsolati karakterlánc a `HouseHoldDbContext.cs` fájlban van definiálva:
 
 ```csharp
-string connStr = @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=house";
+string connStr = @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=householddb;Integrated Security=false;MultipleActiveResultSets=true";
 ```
 
 ---
