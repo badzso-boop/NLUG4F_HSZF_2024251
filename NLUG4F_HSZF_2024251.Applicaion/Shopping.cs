@@ -10,14 +10,12 @@ namespace NLUG4F_HSZF_2024251.Applicaion
 {
     public class Shopping
     {
-        HouseHoldDbContext context { get; set; }
         ProductDataProvider productData { get; set; }
         PersonDataProvider personData { get; set; }
 
         public event EventHandler<FavoriteProductRestockEventArgs> FavoriteProductRestock;
-        public Shopping(HouseHoldDbContext context, ProductDataProvider productData, PersonDataProvider personData)
+        public Shopping(ProductDataProvider productData, PersonDataProvider personData)
         {
-            this.context = context;
             this.productData = productData;
             this.personData = personData;
         }

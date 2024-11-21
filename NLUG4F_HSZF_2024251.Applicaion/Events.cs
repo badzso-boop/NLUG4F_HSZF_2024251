@@ -28,5 +28,4 @@ namespace NLUG4F_HSZF_2024251.Applicaion
             Products = products;
         }
     }
-
 }

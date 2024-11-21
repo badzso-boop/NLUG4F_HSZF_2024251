@@ -11,15 +11,10 @@ namespace NLUG4F_HSZF_2024251.Applicaion
 {
     public class MakeFood
     {
-        public MakeFood(ProductCRUD productCRUD, HouseHoldDbContext context, ProductDataProvider productData)
+        public MakeFood(ProductDataProvider productData)
         {
-            this.productCRUD = productCRUD;
-            this.context = context;
             this.productData = productData;
         }
-
-        ProductCRUD productCRUD { get; set; }
-        HouseHoldDbContext context { get; set; }
         ProductDataProvider productData { get; set; }
 
         static void Kiir(List<Product> products)

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NLUG4F_HSZF_2024251.Persistence.MsSql
 {
-    public class Pantry
+    public class Pantry : IEntity
     {
         public Pantry(int capacity)
         {

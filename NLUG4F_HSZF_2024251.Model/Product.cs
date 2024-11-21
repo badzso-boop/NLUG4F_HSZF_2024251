@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NLUG4F_HSZF_2024251.Persistence.MsSql
 {
-    public class Product
+    public class Product : IEntity
     {
         public Product(string name, decimal quantity, decimal criticalLevel, DateTime bestBefore, bool storeInFridge)
         {

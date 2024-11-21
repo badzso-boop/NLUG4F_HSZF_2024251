@@ -15,11 +15,11 @@ namespace NLUG4F_HSZF_2024251.Applicaion
 
     }
 
-    public interface CRUDActions
+    public interface CRUDActions<T>
     {
-        void KiirasAll();
-        void KiirasEgy(int id);
-        void Hozzaad();
+        List<T> WriteAll();
+        void WriteOne(int id);
+        void Add();
         void Update();
         void Delete();
     }

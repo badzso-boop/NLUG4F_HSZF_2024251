@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NLUG4F_HSZF_2024251.Persistence.MsSql
 {
-    public class Person
+    public class Person : IEntity
     {
         public Person(string name, bool responsibleForPurchase)
         {

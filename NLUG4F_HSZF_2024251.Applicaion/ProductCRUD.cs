@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NLUG4F_HSZF_2024251.Applicaion
 {
-    public class ProductCRUD : CRUDActions
+    public class ProductCRUD : CRUDActions<Product>
     {
         HouseHoldDbContext context { get; set; }
         ProductDataProvider productData { get; set; }
@@ -32,15 +32,12 @@ namespace NLUG4F_HSZF_2024251.Applicaion
             }
         }
 
-        public void KiirasAll()
+        public List<Product> WriteAll()
         {
-            Console.Clear();
-            Console.WriteLine("Fetching all products...");
-            var products = productData.GetAll();
-            Kiir(products);
+            return productData.GetAll();
         }
 
-        public void KiirasEgy(int productId)
+        public void WriteOne(int productId)
         {
             try
             {
@@ -53,7 +50,7 @@ namespace NLUG4F_HSZF_2024251.Applicaion
             }
         }
 
-        public void Hozzaad()
+        public void Add()
         {
             Console.Clear();
             Console.WriteLine("Adding a new product...");

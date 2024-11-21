@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NLUG4F_HSZF_2024251.Applicaion
 {
-    public class PantryCRUD : CRUDActions
+    public class PantryCRUD : CRUDActions<Pantry>
     {
         HouseHoldDbContext context { get; set; }
         PantryDataProvider pantryData { get; set; }
@@ -34,7 +34,7 @@ namespace NLUG4F_HSZF_2024251.Applicaion
             }
         }
 
-        public void Hozzaad()
+        public void Add()
         {
             Console.Clear();
             Console.WriteLine("Adding a new pantry...");
@@ -86,17 +86,12 @@ namespace NLUG4F_HSZF_2024251.Applicaion
             Console.WriteLine("Pantry added successfully!");
         }
 
-        public void KiirasAll()
+        public List<Pantry> WriteAll()
         {
-            Console.Clear();
-            Console.WriteLine("Fetching all pantry...");
-            var pantrys = pantryData.GetAll();
-            Console.WriteLine($"Number of pantrys: {pantrys.Count}");
-            Console.WriteLine("Current pantrys:");
-            Kiir(pantrys);
+            return pantryData.GetAll();
         }
 
-        public void KiirasEgy(int id)
+        public void WriteOne(int id)
         {
             Pantry PantryToWrite = pantryData.GetById(id);
             Kiir(new List<Pantry> { PantryToWrite });

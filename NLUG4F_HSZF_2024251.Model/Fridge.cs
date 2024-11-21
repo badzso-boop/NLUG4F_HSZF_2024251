@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NLUG4F_HSZF_2024251.Persistence.MsSql
 {
-    public class Fridge
+    public class Fridge : IEntity
     {
         public Fridge(int capacity)
         {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NLUG4F_HSZF_2024251.Applicaion
 {
-    public class PersonCRUD : CRUDActions
+    public class PersonCRUD : CRUDActions<Person>
     {
         HouseHoldDbContext context { get; set; }
         PersonDataProvider personData { get; set; }
@@ -30,22 +30,13 @@ namespace NLUG4F_HSZF_2024251.Applicaion
             }
         }
 
-        public void KiirasAll()
-        {
-            Console.Clear();
-            Console.WriteLine("Fetching all people...");
-            
-            var people = personData.GetAll();
-            if (people.Count == 0)
-            {
-                Console.WriteLine("No person found.");
-                return;
-            }
-            Console.WriteLine($"Number of people: {people.Count}");
-            Kiir(people);
+        public List<Person> WriteAll()
+        {   
+            return personData.GetAll();
         }
 
-        public void KiirasEgy(int personId)
+
+        public void WriteOne(int personId)
         {
             try
             {
@@ -58,7 +49,7 @@ namespace NLUG4F_HSZF_2024251.Applicaion
             }
         }
 
-        public void Hozzaad()
+        public void Add()
         {
             Console.Clear();
             Console.WriteLine("Adding a new person...");

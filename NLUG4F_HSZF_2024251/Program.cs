@@ -4,6 +4,7 @@ using NLUG4F_HSZF_2024251.Persistence.MsSql;
 using System;
 using System.Globalization;
 using System.Reflection;
+using static NLUG4F_HSZF_2024251.Persistence.MsSql.JsonRead;
 
 namespace NLUG4F_HSZF_2024251
 {
@@ -19,18 +20,21 @@ namespace NLUG4F_HSZF_2024251
             FridgeDataProvider fridgeData = new FridgeDataProvider(ctx);
             PantryDataProvider pantryData = new PantryDataProvider(ctx);
 
+            InputCollector inputCollector = new InputCollector(ctx, personData, productData, fridgeData, pantryData);
+
             ProductCRUD productCRUD = new ProductCRUD(ctx, productData, personData);
             PersonCRUD personCRUD = new PersonCRUD(ctx, personData, productData);
             FridgeCRUD fridgeCRUD = new FridgeCRUD(ctx, fridgeData, productData);
             PantryCRUD pantryCRUD = new PantryCRUD(ctx, pantryData, productData);
 
             Querry querrys = new Querry(ctx, productData, personData, fridgeData, pantryData);
-            MakeFood MakeFood = new MakeFood(productCRUD, ctx, productData);
-            Shopping shopping = new Shopping(ctx, productData, personData);
+            MakeFood MakeFood = new MakeFood(productData);
+            Shopping shopping = new Shopping(productData, personData);
 
             productData.ProductBelowCriticalLevel += OnProductBelowCriticalLevel;
             shopping.FavoriteProductRestock += OnFavoriteProductRestock;
             querrys.ProductsBelowCriticalLevel += OnProductsBelowCriticalLevel;
+            querrys.NotifyAllHouseholdMembers += OnProductsBelowCriticalLevel;
 
 
             DisplayMenu(
@@ -75,10 +79,10 @@ namespace NLUG4F_HSZF_2024251
                                     "Delete specific product"
                                 },
                                 new Action[] {
-                                    productCRUD.Hozzaad,
-                                    productCRUD.KiirasAll,
-                                    productCRUD.Update,
-                                    productCRUD.Delete
+                                    () => inputCollector.UnifiedAdd("product"),
+                                    () => inputCollector.PrintAll<Product>(productCRUD.WriteAll()),
+                                    () => inputCollector.UnifiedUpdate("product"),
+                                    () => inputCollector.UnifiedDelete("product")
                                 }
                             ),
                             () => DisplayMenu(
@@ -89,10 +93,10 @@ namespace NLUG4F_HSZF_2024251
                                     "Delete specific person"
                                 },
                                 new Action[] {
-                                    personCRUD.Hozzaad,
-                                    personCRUD.KiirasAll,
-                                    personCRUD.Update,
-                                    personCRUD.Delete
+                                    () => inputCollector.UnifiedAdd("person"),
+                                    () => inputCollector.PrintAll<Person>(personCRUD.WriteAll()),
+                                    () => inputCollector.UnifiedUpdate("person"),
+                                    () => inputCollector.UnifiedDelete("person")
                                 }
                             ),
                             () => DisplayMenu(
@@ -103,10 +107,10 @@ namespace NLUG4F_HSZF_2024251
                                     "Delete specific fridge"
                                 },
                                 new Action[] {
-                                    fridgeCRUD.Hozzaad,
-                                    fridgeCRUD.KiirasAll,
-                                    fridgeCRUD.Update,
-                                    fridgeCRUD.Delete
+                                    () => inputCollector.UnifiedAdd("fridge"),
+                                    () => inputCollector.PrintAll<Fridge>(fridgeCRUD.WriteAll()),
+                                    () => inputCollector.UnifiedUpdate("fridge"),
+                                    () => inputCollector.UnifiedDelete("fridge")
                                 }
                             ),
                             () => DisplayMenu(
@@ -117,10 +121,10 @@ namespace NLUG4F_HSZF_2024251
                                     "Delete specific pantry"
                                 },
                                 new Action[] {
-                                    pantryCRUD.Hozzaad,
-                                    pantryCRUD.KiirasAll,
-                                    pantryCRUD.Update,
-                                    pantryCRUD.Delete
+                                    () => inputCollector.UnifiedAdd("pantry"),
+                                    () => inputCollector.PrintAll<Pantry>(pantryCRUD.WriteAll()),
+                                    () => inputCollector.UnifiedUpdate("pantry"),
+                                    () => inputCollector.UnifiedDelete("fridge")
                                 }
                             ),
                         }
@@ -212,5 +216,6 @@ namespace NLUG4F_HSZF_2024251
                 y = 5;
             }
         }
+
     }
 }

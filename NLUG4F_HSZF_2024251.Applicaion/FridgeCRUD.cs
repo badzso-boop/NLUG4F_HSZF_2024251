@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NLUG4F_HSZF_2024251.Applicaion
 {
-    public class FridgeCRUD : CRUDActions
+    public class FridgeCRUD : CRUDActions<Fridge>
     {
         HouseHoldDbContext context { get; set; }
         FridgeDataProvider fridgeData { get; set; }
@@ -36,7 +36,7 @@ namespace NLUG4F_HSZF_2024251.Applicaion
             }
         }
 
-        public void Hozzaad()
+        public void Add()
         {
             Console.Clear();
             Console.WriteLine("Adding a new Fridge...");
@@ -87,17 +87,12 @@ namespace NLUG4F_HSZF_2024251.Applicaion
             Console.WriteLine("Fridge added successfully!");
         }
 
-        public void KiirasAll()
+        public List<Fridge> WriteAll()
         {
-            Console.Clear();
-            Console.WriteLine("Fetching all Fridge...");
-            var fridges = fridgeData.GetAll();
-            Console.WriteLine($"Number of fridges: {fridges.Count}");
-            Console.WriteLine("Current fridges:");
-            Kiir(fridges);
+            return fridgeData.GetAll();
         }
 
-        public void KiirasEgy(int id)
+        public void WriteOne(int id)
         {
             Fridge FridgeToWrite = fridgeData.GetById(id);
             Kiir(new List<Fridge> { FridgeToWrite });
