@@ -24,6 +24,13 @@ namespace NLUG4F_HSZF_2024251
             // Regisztráljuk a szükséges típusokat
             serviceCollection.AddTransient<DataProvider>();
             serviceCollection.AddTransient<GetDatas>();
+            serviceCollection.AddTransient<HouseHoldDbContext>();
+
+            serviceCollection.AddTransient<PersonDataProvider>();
+            serviceCollection.AddTransient<ProductDataProvider>();
+            serviceCollection.AddTransient<FridgeDataProvider>();
+            serviceCollection.AddTransient<PantryDataProvider>();
+
             serviceCollection.AddTransient<IProductDataProvider, ProductDataProvider>();
             serviceCollection.AddTransient<IRepository<Person>, PersonDataProvider>();
             serviceCollection.AddTransient<IRepository<Fridge>, FridgeDataProvider>();
@@ -44,7 +51,7 @@ namespace NLUG4F_HSZF_2024251
             MakeFood MakeFood = new MakeFood(productDataProvider);
             Shopping shopping = new Shopping(productDataProvider, personDataProvider);
 
-            getDatas.DataProvider.ProductDataProvider.ProductBelowCriticalLevel += OnProductBelowCriticalLevel;
+            productDataProvider.ProductBelowCriticalLevel += OnProductBelowCriticalLevel;
             shopping.FavoriteProductRestock += OnFavoriteProductRestock;
             querrys.ProductsBelowCriticalLevel += OnProductsBelowCriticalLevel;
             querrys.NotifyAllHouseholdMembers += OnProductsBelowCriticalLevel;
@@ -55,8 +62,8 @@ namespace NLUG4F_HSZF_2024251
                      "Queries",
                       "Cooking Food",
                       "Shopping",
-                      "Reading",
-                      "Writing",
+                      "Read data",
+                      "Export data",
                       "DB Editing"
                 ],
                 [

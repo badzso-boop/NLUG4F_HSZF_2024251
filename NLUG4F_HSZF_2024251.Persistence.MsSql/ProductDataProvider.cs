@@ -51,7 +51,7 @@ namespace NLUG4F_HSZF_2024251.Persistence.MsSql
             {
                 throw new ProductNotFoundException(entity.Id);
             }
-            _context.Products.Update(entity);
+            _context.Products.Update(existingProduct);
             _context.SaveChanges();
 
             if (entity.Quantity <= entity.CriticalLevel)

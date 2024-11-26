@@ -28,22 +28,26 @@ namespace NLUG4F_HSZF_2024251.Applicaion
         {
             var fridge = _fridgeDataProvider.GetById(1);
             var pantry = _pantryDataProvider.GetById(1);
+            List<Product> allProducts = new List<Product>();
 
-            var fridgeProducts = fridge.Products?.ToList() ?? new List<Product>();
-            var pantryProducts = pantry.Products?.ToList() ?? new List<Product>();
-
-            int maxCapacity = fridge.Capacity + pantry.Capacity;
-            decimal CriticalCapacityThreshold = (decimal)maxCapacity * (decimal)0.1;
-
-            List<Product> allProducts = new List<Product>(fridgeProducts);
-            allProducts.AddRange(pantryProducts);
-
-            decimal totalQuantity = allProducts.Sum(product => product.Quantity);
-            decimal remainingCapacity = maxCapacity - totalQuantity;
-
-            if (remainingCapacity < CriticalCapacityThreshold)
+            if (fridge != null || pantry != null)
             {
-                NotifyAllHouseholdMembers?.Invoke(this, new LowStockProductListEventArgs(allProducts));
+                var fridgeProducts = fridge?.Products?.ToList() ?? new List<Product>();
+                var pantryProducts = pantry?.Products?.ToList() ?? new List<Product>();
+
+                int maxCapacity = fridge.Capacity + pantry.Capacity;
+                decimal CriticalCapacityThreshold = (decimal)maxCapacity * (decimal)0.1;
+
+                allProducts.AddRange(fridgeProducts);
+                allProducts.AddRange(pantryProducts);
+
+                decimal totalQuantity = allProducts.Sum(product => product.Quantity);
+                decimal remainingCapacity = maxCapacity - totalQuantity;
+
+                if (remainingCapacity < CriticalCapacityThreshold)
+                {
+                    NotifyAllHouseholdMembers?.Invoke(this, new LowStockProductListEventArgs(allProducts));
+                }
             }
 
             return allProducts;
