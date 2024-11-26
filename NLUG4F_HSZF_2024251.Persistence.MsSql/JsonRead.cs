@@ -15,12 +15,14 @@ namespace NLUG4F_HSZF_2024251.Persistence.MsSql
         public Fridge fridge { get; set; }
         public Pantry pantry { get; set; }
 
+        private HouseHoldDbContext ctx;
+
         public JsonRead(HouseHoldDbContext ctx)
         {
-            //SeedDatabase(ctx);
+            this.ctx = ctx;
         }
 
-        public void SeedDatabase(HouseHoldDbContext ctx)
+        public void SeedDatabase()
         {
             people = new HashSet<Person>();
             products = new HashSet<Product>();
@@ -61,14 +63,6 @@ namespace NLUG4F_HSZF_2024251.Persistence.MsSql
 
             ctx.SaveChanges();
         }
-
-        //public class HouseholdData
-        //{
-        //    public Fridge Fridge { get; set; }
-        //    public Pantry Pantry { get; set; }
-        //    public List<Person> Persons { get; set; }
-        //    public List<Product> Products { get; set; }
-        //}
 
         public class TempData
         {

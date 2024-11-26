@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="linq2db" Version="5.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\NLUG4F_HSZF_2024251.Applicaion\NLUG4F_HSZF_2024251.Applicaion.csproj" />
     <ProjectReference Include="..\NLUG4F_HSZF_2024251.Model\NLUG4F_HSZF_2024251.Model.csproj" />
     <ProjectReference Include="..\NLUG4F_HSZF_2024251.Persistence.MsSql\NLUG4F_HSZF_2024251.Persistence.MsSql.csproj" />

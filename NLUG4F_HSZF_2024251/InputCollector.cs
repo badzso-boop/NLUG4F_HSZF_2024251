@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LinqToDB.DataProvider;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using NLUG4F_HSZF_2024251.Model;
 using NLUG4F_HSZF_2024251.Persistence.MsSql;
 using System;
@@ -16,19 +18,19 @@ namespace NLUG4F_HSZF_2024251
 {
     public class InputCollector
     {
-        public PersonDataProvider personData;
-        public ProductDataProvider productData;
-        public FridgeDataProvider fridgeData;
-        public PantryDataProvider pantryData;
-        public HouseHoldDbContext context;
+        private readonly IDataProvider _dataProvider;
 
-        public InputCollector(HouseHoldDbContext houseHoldDbContext, PersonDataProvider InputPersonData, ProductDataProvider InputProductData, FridgeDataProvider InputFridgeData, PantryDataProvider InputPantryData)
+        private readonly IProductDataProvider productData;
+        private readonly IRepository<Person> personData;
+        private readonly IRepository<Fridge> fridgeData;
+        private readonly IRepository<Pantry> pantryData;
+
+        public InputCollector(IProductDataProvider productDataProvider, IRepository<Person> PersonDataProvider, IRepository<Fridge> FridgeDataProvider, IRepository<Pantry> PantryDataProvider)
         {
-            this.context = houseHoldDbContext;
-            personData = InputPersonData;
-            productData = InputProductData;
-            fridgeData = InputFridgeData;
-            pantryData = InputPantryData;
+            personData = PersonDataProvider;
+            productData = productDataProvider;
+            fridgeData = FridgeDataProvider;
+            pantryData = PantryDataProvider;
         }
 
         public Product CollectProductData()
@@ -94,7 +96,7 @@ namespace NLUG4F_HSZF_2024251
 
 
         // Helper methods
-        private decimal GetDecimalInput(string prompt)
+        public decimal GetDecimalInput(string prompt)
         {
             decimal value;
             while (true)
@@ -106,7 +108,33 @@ namespace NLUG4F_HSZF_2024251
             }
         }
 
-        private int GetIntInput(string prompt)
+        public List<decimal> GetDecimalInputs(string prompt)
+        {
+            List<decimal> inputs = new List<decimal>();
+            decimal value;
+
+            Console.WriteLine(prompt + " [Enter -1 to finish.]");
+
+            while (true)
+            {
+                Console.Write(prompt);
+                if (decimal.TryParse(Console.ReadLine(), NumberStyles.Any, CultureInfo.InvariantCulture, out value))
+                {
+                    if (value == -1)
+                        break;
+
+                    inputs.Add(value);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid decimal number.");
+                }
+            }
+
+            return inputs;
+        }
+
+        public int GetIntInput(string prompt)
         {
             int value;
             while (true)
@@ -118,19 +146,42 @@ namespace NLUG4F_HSZF_2024251
             }
         }
 
-        private bool GetBooleanInput(string prompt)
+        public bool GetBooleanInput(string prompt)
         {
             Console.Write(prompt);
             string input = Console.ReadLine()?.ToLower();
             return input == "yes" || input == "y";
         }
 
-        private List<int> GetMultipleIdsInput(string prompt, IEnumerable<Product> products)
+        public List<int> GetMultipleIdsInput(string prompt, IEnumerable<Product> products)
         {
             Console.WriteLine(prompt);
             foreach (var product in products)
             {
-                Console.WriteLine($"Id: {product.Id}, Name: {product.Name}");
+                Console.WriteLine($"Id: {product.Id}, Name: {product.Name}, Quantity: {product.Quantity}");
+            }
+
+            List<int> ids = new List<int>();
+            int input;
+            do
+            {
+                input = GetIntInput("Product ID (-1 to finish): ");
+                if (input == -1) break;
+                if (products.Any(p => p.Id == input))
+                    ids.Add(input);
+                else
+                    Console.WriteLine("Invalid ID, please try again.");
+            } while (true);
+
+            return ids;
+        }
+
+        public List<int> GetMultipleIdsInputWithDecimal(string prompt, IEnumerable<Product> products)
+        {
+            Console.WriteLine(prompt);
+            foreach (var product in products)
+            {
+                Console.WriteLine($"Id: {product.Id}, Name: {product.Name}, Quantity: {product.Quantity}");
             }
 
             List<int> ids = new List<int>();
@@ -205,8 +256,8 @@ namespace NLUG4F_HSZF_2024251
                         {
                             if (product.StoreInFridge)
                             {
-                                var fridgeCTX = context.Fridge;
-                                var fridgeToAdd = fridgeCTX.Include(f => f.Products).FirstOrDefault();
+                                var fridgeCTX = fridgeData.GetAll();
+                                var fridgeToAdd = fridgeCTX.Count > 0 ? fridgeCTX[0] : null;
 
                                 if (fridgeToAdd != null)
                                 {
@@ -231,8 +282,8 @@ namespace NLUG4F_HSZF_2024251
                             }
                             else
                             {
-                                var pantryCTX = context.Pantry;
-                                var pantryToAdd = pantryCTX.Include(p => p.Products).FirstOrDefault();
+                                var pantryCTX = pantryData.GetAll();
+                                var pantryToAdd = pantryCTX.Count > 0 ? pantryCTX[0] : null;
 
                                 if (pantryToAdd != null)
                                 {
@@ -429,8 +480,8 @@ namespace NLUG4F_HSZF_2024251
 
                     if (productToDelete != null)
                     {
-                        var fridgeCTX = context.Fridge;
-                        var fridge = fridgeCTX.Include(f => f.Products).FirstOrDefault();
+                        var fridgeCTX = fridgeData.GetAll();
+                        var fridge = fridgeCTX.Count > 0 ? fridgeCTX[0] : null;
                         if (fridge != null && fridge.Products.Contains(productToDelete))
                         {
                             fridge.Products.Remove(productToDelete);

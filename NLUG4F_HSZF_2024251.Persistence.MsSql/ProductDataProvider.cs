@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NLUG4F_HSZF_2024251.Persistence.MsSql
 {
-    public class ProductDataProvider : IRepository<Product>
+    public class ProductDataProvider : IProductDataProvider
     {
         private readonly HouseHoldDbContext _context;
         private readonly PersonDataProvider _personDataProvider;

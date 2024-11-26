@@ -19,8 +19,9 @@ namespace NLUG4F_HSZF_2024251.Model
 
     public interface IProductRepository
     {
-        void GetExpiringSoon();
-        void GetLowStockItems();
-        void GetAllStockProduct();
+        List<Product> GetExpiringSoon();
+        List<Product> GetLowStockItems();
+        List<Product> GetAllStockProduct();
+        bool ExportToTxt();
     }
 }
