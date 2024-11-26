@@ -93,8 +93,6 @@ namespace NLUG4F_HSZF_2024251
             return new Fridge(capacity, selectedProducts);
         }
 
-
-
         // Helper methods
         public decimal GetDecimalInput(string prompt)
         {
