@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NLUG4F_HSZF_2024251.Applicaion
 {
-    public class Querry : IProductRepository
+    public class Querry : IQuerryRepository
     {
         private readonly IProductDataProvider _productDataProvider;
         private readonly IRepository<Person> _personDataProvider;

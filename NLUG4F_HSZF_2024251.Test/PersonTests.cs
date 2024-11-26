@@ -16,7 +16,6 @@ namespace NLUG4F_HSZF_2024251.Test
         private HouseHoldDbContext _context;
         private PersonDataProvider _dataProvider;
         private ProductDataProvider _productDataProvider;
-        private PersonCRUD _personCRUD;
         private Person person1 = new Person { Name = "John Doe", FavoriteProductIds = [1, 3], ResponsibleForPurchase = false };
         private Person person2 = new Person { Name = "John Peter", FavoriteProductIds = [4, 5], ResponsibleForPurchase = true };
 
@@ -26,7 +25,6 @@ namespace NLUG4F_HSZF_2024251.Test
             _context = new HouseHoldDbContext();
             _dataProvider = new PersonDataProvider(_context);
             _productDataProvider = new ProductDataProvider(_context, _dataProvider);
-            _personCRUD = new PersonCRUD(_context, _dataProvider, _productDataProvider);
         }
 
         [TestMethod]

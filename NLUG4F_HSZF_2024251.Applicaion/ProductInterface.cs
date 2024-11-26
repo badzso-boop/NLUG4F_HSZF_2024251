@@ -17,7 +17,7 @@ namespace NLUG4F_HSZF_2024251.Model
     //Task<IEnumerable<Product>> GetLowStockItems():
     //Leírás: Az alacsony készletszintű termékek lekérdezése.Visszaadja azokat a termékeket, amelyek mennyisége eléri vagy alacsonyabb a kritikus szintnél, jelezve, hogy szükség lehet az utánpótlásukra.
 
-    public interface IProductRepository
+    public interface IQuerryRepository
     {
         List<Product> GetExpiringSoon();
         List<Product> GetLowStockItems();
