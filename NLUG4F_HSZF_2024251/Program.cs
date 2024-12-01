@@ -6,44 +6,23 @@ using NLUG4F_HSZF_2024251.Persistence.MsSql;
 using System;
 using System.Globalization;
 using System.Reflection;
+using static LinqToDB.Reflection.Methods.LinqToDB.Insert;
 using static NLUG4F_HSZF_2024251.Persistence.MsSql.JsonRead;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace NLUG4F_HSZF_2024251
 {
-    //- Nit picking 1.: Teli vagy olyan állományokkal, amiket nem használsz vagy nincs is rá
-    //szükségünk. Töröljük őket.
-
     internal class Program
     {
         static void Main(string[] args)
         {
-            // 1. IoC konténer konfigurálása
-            var serviceCollection = new ServiceCollection();
-
-            // Regisztráljuk a szükséges típusokat
-            serviceCollection.AddTransient<DataProvider>();
-            serviceCollection.AddTransient<GetDatas>();
-            serviceCollection.AddTransient<HouseHoldDbContext>();
-
-            serviceCollection.AddTransient<PersonDataProvider>();
-            serviceCollection.AddTransient<ProductDataProvider>();
-            serviceCollection.AddTransient<FridgeDataProvider>();
-            serviceCollection.AddTransient<PantryDataProvider>();
-
-            serviceCollection.AddTransient<IProductDataProvider, ProductDataProvider>();
-            serviceCollection.AddTransient<IRepository<Person>, PersonDataProvider>();
-            serviceCollection.AddTransient<IRepository<Fridge>, FridgeDataProvider>();
-            serviceCollection.AddTransient<IRepository<Pantry>, PantryDataProvider>();
-
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-
-            // 2. `GetDatas` példányosítása a konténerből
-            var getDatas = serviceProvider.GetRequiredService<GetDatas>();
-            var productDataProvider = serviceProvider.GetRequiredService<ProductDataProvider>();
-            var personDataProvider = serviceProvider.GetRequiredService<PersonDataProvider>();
-            var fridgeDataProvider = serviceProvider.GetRequiredService<FridgeDataProvider>();
-            var pantryDataProvider = serviceProvider.GetRequiredService<PantryDataProvider>();
+            ServiceDatas serviceDatas = new ServiceDatas();
+            serviceDatas.Generate();
+            var getDatas = serviceDatas.GetDatas;
+            var productDataProvider = serviceDatas.ProductDataProvider;
+            var personDataProvider = serviceDatas.PersonDataProvider;
+            var fridgeDataProvider = serviceDatas.FridgeDataProvider;
+            var pantryDataProvider = serviceDatas.PantryDataProvider;
 
             InputCollector inputCollector = new InputCollector(productDataProvider, personDataProvider, fridgeDataProvider, pantryDataProvider);
 

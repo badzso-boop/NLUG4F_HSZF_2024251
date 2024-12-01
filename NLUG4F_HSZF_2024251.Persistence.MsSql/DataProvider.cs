@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLUG4F_HSZF_2024251.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NLUG4F_HSZF_2024251.Persistence.MsSql
 {
-    public class DataProvider
+    public class DataProvider : IDataProvider
     {
         public HouseHoldDbContext _context;
         public JsonRead JsonRead { get; set; }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NLUG4F_HSZF_2024251.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace NLUG4F_HSZF_2024251.Persistence.MsSql
 {
-    public class JsonRead
+    public class JsonRead : IJsonRead
     {
-        public HashSet<Person> people { get; set; }
-        public HashSet<Product> products { get; set; }
-        public Fridge fridge { get; set; }
-        public Pantry pantry { get; set; }
+        public HashSet<Person> People { get; set; }
+        public HashSet<Product> Products { get; set; }
+        public Fridge Fridge { get; set; }
+        public Pantry Pantry { get; set; }
 
         private HouseHoldDbContext ctx;
 
@@ -24,10 +25,10 @@ namespace NLUG4F_HSZF_2024251.Persistence.MsSql
 
         public void SeedDatabase()
         {
-            people = new HashSet<Person>();
-            products = new HashSet<Product>();
-            fridge = new Fridge();
-            pantry = new Pantry();
+            People = new HashSet<Person>();
+            Products = new HashSet<Product>();
+            Fridge = new Fridge();
+            Pantry = new Pantry();
 
             string jsonFilePath = "jsons/data.json";
             string jsonString = File.ReadAllText(jsonFilePath);
@@ -35,31 +36,31 @@ namespace NLUG4F_HSZF_2024251.Persistence.MsSql
 
             if (householdData != null)
             {
-                people = new HashSet<Person>(householdData.Persons);
+                People = new HashSet<Person>(householdData.Persons);
                 foreach (var product in householdData.Products)
                 {
-                    products.Add(new Product(product.Name, product.Quantity, product.CriticalLevel, product.BestBefore, product.StoreInFridge));
+                    Products.Add(new Product(product.Name, product.Quantity, product.CriticalLevel, product.BestBefore, product.StoreInFridge));
                 }
-                fridge = new Fridge(householdData.Fridge.Capacity);
-                pantry = new Pantry(householdData.Pantry.Capacity);
+                Fridge = new Fridge(householdData.Fridge.Capacity);
+                Pantry = new Pantry(householdData.Pantry.Capacity);
             }
 
-            ctx.Products.AddRange(products);
+            ctx.Products.AddRange(Products);
             ctx.SaveChanges();
 
-            var fridgeProducts = ctx.Products
+            var FridgeProducts = ctx.Products
                                     .Where(p => householdData.Fridge.ProductIds.Contains(p.Id))
                                     .ToList();
-            fridge.Products.AddRange(fridgeProducts);
+            Fridge.Products.AddRange(FridgeProducts);
 
-            var pantryProducts = ctx.Products
+            var PantryProducts = ctx.Products
                                     .Where(p => householdData.Pantry.ProductIds.Contains(p.Id))
                                     .ToList();
-            pantry.Products.AddRange(pantryProducts);
+            Pantry.Products.AddRange(PantryProducts);
 
-            ctx.People.AddRange(people);
-            ctx.Pantry.Add(pantry);
-            ctx.Fridge.Add(fridge);
+            ctx.People.AddRange(People);
+            ctx.Pantry.Add(Pantry);
+            ctx.Fridge.Add(Fridge);
 
             ctx.SaveChanges();
         }
@@ -71,14 +72,11 @@ namespace NLUG4F_HSZF_2024251.Persistence.MsSql
             public List<Person> Persons { get; set; }
             public List<Product> Products { get; set; }
         }
-
-
         public class FridgeData
         {
             public int Capacity { get; set; }
             public List<int> ProductIds { get; set; }
         }
-
         public class PantryData
         {
             public int Capacity { get; set; }
