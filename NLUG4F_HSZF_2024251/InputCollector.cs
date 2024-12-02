@@ -18,8 +18,6 @@ namespace NLUG4F_HSZF_2024251
 {
     public class InputCollector
     {
-        private readonly IDataProvider _dataProvider;
-
         private readonly IProductDataProvider productData;
         private readonly IRepository<Person> personData;
         private readonly IRepository<Fridge> fridgeData;

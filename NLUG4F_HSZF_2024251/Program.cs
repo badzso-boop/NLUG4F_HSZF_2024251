@@ -19,10 +19,10 @@ namespace NLUG4F_HSZF_2024251
             ServiceDatas serviceDatas = new ServiceDatas();
             serviceDatas.Generate();
             var getDatas = serviceDatas.GetDatas;
-            var productDataProvider = serviceDatas.ProductDataProvider;
-            var personDataProvider = serviceDatas.PersonDataProvider;
-            var fridgeDataProvider = serviceDatas.FridgeDataProvider;
-            var pantryDataProvider = serviceDatas.PantryDataProvider;
+            var productDataProvider = getDatas.DataProvider.ProductDataProvider;
+            var personDataProvider = getDatas.DataProvider.PersonDataProvider;
+            var fridgeDataProvider = getDatas.DataProvider.FridgeDataProvider;
+            var pantryDataProvider = getDatas.DataProvider.PantryDataProvider;
 
             InputCollector inputCollector = new InputCollector(productDataProvider, personDataProvider, fridgeDataProvider, pantryDataProvider);
 

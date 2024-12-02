@@ -55,7 +55,15 @@ namespace NLUG4F_HSZF_2024251.Applicaion
 
         public List<Product> GetLowStockItems()
         {
-            var lowStockProducts = _productDataProvider.GetAll()?.Where(p => p.Quantity <= p.CriticalLevel).ToList() ?? new List<Product>();
+            var seged2 = _productDataProvider.GetAll().ToList();
+            List<Product> lowStockProducts = new List<Product>();
+            foreach (var item in seged2)
+            {
+                if (item.Quantity <= item.CriticalLevel)
+                {
+                    lowStockProducts.Add(item);
+                }
+            }
 
             if (lowStockProducts.Count != 0)
             {
