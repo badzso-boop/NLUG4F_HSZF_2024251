@@ -22,7 +22,6 @@ namespace NLUG4F_HSZF_2024251.Model
         PersonDataProvider PersonDataProvider { get; }
         FridgeDataProvider FridgeDataProvider { get; }
         PantryDataProvider PantryDataProvider { get; }
-        GetDatas GetDatas { get; }
 
         void Generate();
     }

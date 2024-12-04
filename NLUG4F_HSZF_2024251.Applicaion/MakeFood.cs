@@ -12,16 +12,22 @@ namespace NLUG4F_HSZF_2024251.Applicaion
 {
     public class MakeFood
     {
-        private readonly IProductDataProvider _productDataProvider;
-        public MakeFood(IProductDataProvider productDataProvider)
+        private readonly IRepository<Product> _productDataProvider;
+        public event EventHandler<ProductPersonEventArgs> ProductBelowCriticalLevel;
+        public MakeFood(IRepository<Product> productDataProvider)
         {
             _productDataProvider = productDataProvider;
         }
 
-        public void Cook(List<Product> products)
+        public void Cook(List<Product> products, List<Person> persons)
         {
             foreach (var productToUpdate in products)
             {
+                if (productToUpdate.Quantity <= productToUpdate.CriticalLevel)
+                {
+                    var responsiblePerson = persons.FirstOrDefault(p => p.ResponsibleForPurchase == true);
+                    ProductBelowCriticalLevel?.Invoke(this, new ProductPersonEventArgs(productToUpdate, responsiblePerson));
+                }
                 _productDataProvider.Update(productToUpdate);
             }
         }

@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace NLUG4F_HSZF_2024251.Persistence.MsSql
 {
-    public class ProductDataProvider : IProductDataProvider
+    public class ProductDataProvider : IRepository<Product>
     {
         private readonly HouseHoldDbContext _context;
         private readonly PersonDataProvider _personDataProvider;
-        public event EventHandler<ProductPersonEventArgs> ProductBelowCriticalLevel;
+        
 
         public ProductDataProvider(HouseHoldDbContext context, PersonDataProvider personDataProvider)
         {
@@ -53,12 +53,6 @@ namespace NLUG4F_HSZF_2024251.Persistence.MsSql
             }
             _context.Products.Update(existingProduct);
             _context.SaveChanges();
-
-            if (entity.Quantity <= entity.CriticalLevel)
-            {
-                var responsiblePerson = _personDataProvider.GetAll().FirstOrDefault(p => p.ResponsibleForPurchase == true);
-                ProductBelowCriticalLevel?.Invoke(this, new ProductPersonEventArgs(entity, responsiblePerson));
-            }
         }
 
         public void Delete(int id)

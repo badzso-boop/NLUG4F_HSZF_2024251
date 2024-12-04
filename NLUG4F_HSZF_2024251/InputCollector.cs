@@ -16,14 +16,14 @@ using System.Threading.Tasks;
 
 namespace NLUG4F_HSZF_2024251
 {
-    public class InputCollector
+    public class InputCollector : IInputCollector
     {
-        private readonly IProductDataProvider productData;
-        private readonly IRepository<Person> personData;
-        private readonly IRepository<Fridge> fridgeData;
-        private readonly IRepository<Pantry> pantryData;
+        public IRepository<Product> productData { get; set; }
+        public IRepository<Person> personData { get; set; }
+        public IRepository<Fridge> fridgeData { get; set; }
+        public IRepository<Pantry> pantryData { get; set; }
 
-        public InputCollector(IProductDataProvider productDataProvider, IRepository<Person> PersonDataProvider, IRepository<Fridge> FridgeDataProvider, IRepository<Pantry> PantryDataProvider)
+        public InputCollector(IRepository<Product> productDataProvider, IRepository<Person> PersonDataProvider, IRepository<Fridge> FridgeDataProvider, IRepository<Pantry> PantryDataProvider)
         {
             personData = PersonDataProvider;
             productData = productDataProvider;
@@ -197,6 +197,7 @@ namespace NLUG4F_HSZF_2024251
 
         public void PrintAll<T>(List<T> items)
         {
+            Console.Clear();
             foreach (var item in items)
             {
                 Console.WriteLine($"--- {typeof(T).Name} ---");
@@ -531,7 +532,7 @@ namespace NLUG4F_HSZF_2024251
                     Console.WriteLine("Pantry deleted successfully!");
                     break;
             }
-        } 
+        }
     }
 
 }

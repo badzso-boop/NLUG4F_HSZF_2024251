@@ -16,21 +16,35 @@ namespace NLUG4F_HSZF_2024251
     {
         static void Main(string[] args)
         {
-            ServiceDatas serviceDatas = new ServiceDatas();
-            serviceDatas.Generate();
-            var getDatas = serviceDatas.GetDatas;
-            var productDataProvider = getDatas.DataProvider.ProductDataProvider;
-            var personDataProvider = getDatas.DataProvider.PersonDataProvider;
-            var fridgeDataProvider = getDatas.DataProvider.FridgeDataProvider;
-            var pantryDataProvider = getDatas.DataProvider.PantryDataProvider;
+            var services = new ServiceCollection();
 
-            InputCollector inputCollector = new InputCollector(productDataProvider, personDataProvider, fridgeDataProvider, pantryDataProvider);
+            services.AddDbContext<HouseHoldDbContext>();
 
-            Querry querrys = new Querry(productDataProvider, personDataProvider, fridgeDataProvider, pantryDataProvider);
-            MakeFood MakeFood = new MakeFood(productDataProvider);
-            Shopping shopping = new Shopping(productDataProvider, personDataProvider);
+            services.AddTransient<PersonDataProvider>();
+            services.AddTransient<ProductDataProvider>();
+            services.AddTransient<FridgeDataProvider>();
+            services.AddTransient<PantryDataProvider>();
 
-            productDataProvider.ProductBelowCriticalLevel += OnProductBelowCriticalLevel;
+            services.AddTransient<IRepository<Person>, PersonDataProvider>();
+            services.AddTransient<IRepository<Product>, ProductDataProvider>();
+            services.AddTransient<IRepository<Fridge>, FridgeDataProvider>();
+            services.AddTransient<IRepository<Pantry>, PantryDataProvider>();
+            services.AddTransient<IJsonRead, JsonRead>();
+            services.AddTransient<InputCollector>();
+            services.AddTransient<IInputCollector, InputCollector>();
+
+            services.AddTransient<Querry>();
+            services.AddTransient<MakeFood>();
+            services.AddTransient<Shopping>();
+
+            ServiceProvider serviceProvider = services.BuildServiceProvider();
+
+            Querry querrys = serviceProvider.GetRequiredService<Querry>();
+            MakeFood makeFood = serviceProvider.GetRequiredService<MakeFood>();
+            Shopping shopping = serviceProvider.GetRequiredService<Shopping>();
+            InputCollector inputCollector = serviceProvider.GetRequiredService<InputCollector>();
+
+            makeFood.ProductBelowCriticalLevel += OnProductBelowCriticalLevel;
             shopping.FavoriteProductRestock += OnFavoriteProductRestock;
             querrys.ProductsBelowCriticalLevel += OnProductsBelowCriticalLevel;
             querrys.NotifyAllHouseholdMembers += OnProductsBelowCriticalLevel;
@@ -58,9 +72,9 @@ namespace NLUG4F_HSZF_2024251
                             () => WriteOut(querrys.GetAllStockProduct(), "No products on stock.")
                         }
                     ),
-                    () => MakeFood.Cook(CollectCookData(getDatas)),
-                    () => shopping.RestockProducts(CollectShoppingData(getDatas), getDatas.DataProvider.PersonDataProvider.GetAll() ),
-                    () => {getDatas.DataProvider.JsonRead.SeedDatabase(); },
+                    () => makeFood.Cook(CollectCookData(serviceProvider), serviceProvider.GetRequiredService<IRepository<Person>>().GetAll()),
+                    () => shopping.RestockProducts(CollectShoppingData(serviceProvider), serviceProvider.GetRequiredService<IRepository<Person>>().GetAll() ),
+                    () => { serviceProvider.GetRequiredService<IJsonRead>().SeedDatabase(); },
                     () => { BoolWrite("Exported succesfully","No products to export", querrys.ExportToTxt()); }, 
                     () => DisplayMenu(
                         new string[] {
@@ -79,7 +93,7 @@ namespace NLUG4F_HSZF_2024251
                                 },
                                 new Action[] {
                                     () => inputCollector.UnifiedAdd("product"),
-                                    () => inputCollector.PrintAll<Product>(getDatas.DataProvider.ProductDataProvider.GetAll()),
+                                    () => inputCollector.PrintAll<Product>(serviceProvider.GetRequiredService<IRepository<Product>>().GetAll()),
                                     () => inputCollector.UnifiedUpdate("product"),
                                     () => inputCollector.UnifiedDelete("product")
                                 }
@@ -93,7 +107,7 @@ namespace NLUG4F_HSZF_2024251
                                 },
                                 new Action[] {
                                     () => inputCollector.UnifiedAdd("person"),
-                                    () => inputCollector.PrintAll<Person>(getDatas.DataProvider.PersonDataProvider.GetAll()),
+                                    () => inputCollector.PrintAll<Person>(serviceProvider.GetRequiredService<IRepository<Person>>().GetAll()),
                                     () => inputCollector.UnifiedUpdate("person"),
                                     () => inputCollector.UnifiedDelete("person")
                                 }
@@ -107,7 +121,7 @@ namespace NLUG4F_HSZF_2024251
                                 },
                                 new Action[] {
                                     () => inputCollector.UnifiedAdd("fridge"),
-                                    () => inputCollector.PrintAll<Fridge>(getDatas.DataProvider.FridgeDataProvider.GetAll()),
+                                    () => inputCollector.PrintAll<Fridge>(serviceProvider.GetRequiredService<IRepository<Fridge>>().GetAll()),
                                     () => inputCollector.UnifiedUpdate("fridge"),
                                     () => inputCollector.UnifiedDelete("fridge")
                                 }
@@ -121,7 +135,7 @@ namespace NLUG4F_HSZF_2024251
                                 },
                                 new Action[] {
                                     () => inputCollector.UnifiedAdd("pantry"),
-                                    () => inputCollector.PrintAll<Pantry>(getDatas.DataProvider.PantryDataProvider.GetAll()),
+                                    () => inputCollector.PrintAll<Pantry>(serviceProvider.GetRequiredService<IRepository<Pantry>>().GetAll()),
                                     () => inputCollector.UnifiedUpdate("pantry"),
                                     () => inputCollector.UnifiedDelete("fridge")
                                 }
@@ -132,13 +146,15 @@ namespace NLUG4F_HSZF_2024251
             );
         }
 
-        private static List<Product> CollectShoppingData(GetDatas datas)
+        private static List<Product> CollectShoppingData(ServiceProvider serviceProvider)
         {
             Console.Clear();
             Console.WriteLine("Fetching all products...");
             List<Product> productsToUpdate = new List<Product>();
-            var products = datas.DataProvider.ProductDataProvider.GetAll();
-            var people = datas.DataProvider.PersonDataProvider.GetAll();
+            var productData = serviceProvider.GetRequiredService<IRepository<Product>>();
+            var peopleData = serviceProvider.GetRequiredService<IRepository<Person>>();
+            var products = productData.GetAll();
+            var people = peopleData.GetAll();
             WriteOut(products, "No products to show.");
 
             List<int> ids = products.Select(p => p.Id).ToList();
@@ -216,11 +232,12 @@ namespace NLUG4F_HSZF_2024251
             return productsToUpdate;
         }
 
-        private static List<Product> CollectCookData(GetDatas datas)
+        private static List<Product> CollectCookData(ServiceProvider serviceProvider)
         {
             Console.Clear();
             List<Product> productsToUpdate = new List<Product>();
-            var products = datas.DataProvider.ProductDataProvider.GetAll();
+            var helper = serviceProvider.GetRequiredService<IRepository<Product>>();
+            var products = helper.GetAll();
             if (products.Count > 0)
             {
                 List<int> ids = products.Select(p => p.Id).ToList();

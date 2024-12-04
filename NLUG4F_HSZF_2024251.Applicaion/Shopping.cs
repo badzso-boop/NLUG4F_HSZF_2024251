@@ -11,11 +11,11 @@ namespace NLUG4F_HSZF_2024251.Applicaion
 {
     public class Shopping
     {
-        private readonly IProductDataProvider productData;
+        private readonly IRepository<Product> productData;
         private readonly IRepository<Person> personData;
 
         public event EventHandler<FavoriteProductRestockEventArgs> FavoriteProductRestock;
-        public Shopping(IProductDataProvider productDataProvider, IRepository<Person> PersonDataProvider)
+        public Shopping(IRepository<Product> productDataProvider, IRepository<Person> PersonDataProvider)
         {
             this.productData = productDataProvider;
             this.personData = PersonDataProvider;

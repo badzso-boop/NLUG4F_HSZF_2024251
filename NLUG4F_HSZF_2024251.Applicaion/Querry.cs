@@ -10,13 +10,13 @@ namespace NLUG4F_HSZF_2024251.Applicaion
 {
     public class Querry : IQuerryRepository
     {
-        private readonly IProductDataProvider _productDataProvider;
+        private readonly IRepository<Product> _productDataProvider;
         private readonly IRepository<Person> _personDataProvider;
         private readonly IRepository<Fridge> _fridgeDataProvider;
         private readonly IRepository<Pantry> _pantryDataProvider;
         public event EventHandler<LowStockProductListEventArgs> ProductsBelowCriticalLevel;
         public event EventHandler<LowStockProductListEventArgs> NotifyAllHouseholdMembers;
-        public Querry(IProductDataProvider productDataProvider, IRepository<Person> PersonDataProvider, IRepository<Fridge> FridgeDataProvider, IRepository<Pantry> PantryDataProvider)
+        public Querry(IRepository<Product> productDataProvider, IRepository<Person> PersonDataProvider, IRepository<Fridge> FridgeDataProvider, IRepository<Pantry> PantryDataProvider)
         {
             _productDataProvider = productDataProvider;
             _personDataProvider = PersonDataProvider;
