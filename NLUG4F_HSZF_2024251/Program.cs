@@ -20,22 +20,22 @@ namespace NLUG4F_HSZF_2024251
 
             services.AddDbContext<HouseHoldDbContext>();
 
-            services.AddTransient<PersonDataProvider>();
-            services.AddTransient<ProductDataProvider>();
-            services.AddTransient<FridgeDataProvider>();
-            services.AddTransient<PantryDataProvider>();
+            services.AddSingleton<PersonDataProvider>();
+            services.AddSingleton<ProductDataProvider>();
+            services.AddSingleton<FridgeDataProvider>();
+            services.AddSingleton<PantryDataProvider>();
 
-            services.AddTransient<IRepository<Person>, PersonDataProvider>();
-            services.AddTransient<IRepository<Product>, ProductDataProvider>();
-            services.AddTransient<IRepository<Fridge>, FridgeDataProvider>();
-            services.AddTransient<IRepository<Pantry>, PantryDataProvider>();
-            services.AddTransient<IJsonRead, JsonRead>();
-            services.AddTransient<InputCollector>();
-            services.AddTransient<IInputCollector, InputCollector>();
+            services.AddSingleton<IRepository<Person>, PersonDataProvider>();
+            services.AddSingleton<IRepository<Product>, ProductDataProvider>();
+            services.AddSingleton<IRepository<Fridge>, FridgeDataProvider>();
+            services.AddSingleton<IRepository<Pantry>, PantryDataProvider>();
+            services.AddSingleton<IJsonRead, JsonRead>();
+            services.AddSingleton<InputCollector>();
+            services.AddSingleton<IInputCollector, InputCollector>();
 
-            services.AddTransient<Querry>();
-            services.AddTransient<MakeFood>();
-            services.AddTransient<Shopping>();
+            services.AddSingleton<Querry>();
+            services.AddSingleton<MakeFood>();
+            services.AddSingleton<Shopping>();
 
             ServiceProvider serviceProvider = services.BuildServiceProvider();
 
