@@ -26,4 +26,9 @@ namespace NLUG4F_HSZF_2024251.Model
         void Generate();
     }
 
+    public interface IMiddle
+    {
+        List<Product> getAllProduct();
+        List<Person> getAllPerson();
+    }
 }

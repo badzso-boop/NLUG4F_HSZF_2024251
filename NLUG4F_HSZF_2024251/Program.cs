@@ -32,6 +32,9 @@ namespace NLUG4F_HSZF_2024251
             services.AddSingleton<IJsonRead, JsonRead>();
             services.AddSingleton<InputCollector>();
             services.AddSingleton<IInputCollector, InputCollector>();
+            services.AddSingleton<Middleman>();
+            services.AddSingleton<IMiddle, Middleman>();
+
 
             services.AddSingleton<Querry>();
             services.AddSingleton<MakeFood>();
@@ -43,6 +46,8 @@ namespace NLUG4F_HSZF_2024251
             MakeFood makeFood = serviceProvider.GetRequiredService<MakeFood>();
             Shopping shopping = serviceProvider.GetRequiredService<Shopping>();
             InputCollector inputCollector = serviceProvider.GetRequiredService<InputCollector>();
+            Middleman middleMan = serviceProvider.GetRequiredService<Middleman>();
+
 
             makeFood.ProductBelowCriticalLevel += OnProductBelowCriticalLevel;
             shopping.FavoriteProductRestock += OnFavoriteProductRestock;
@@ -72,8 +77,8 @@ namespace NLUG4F_HSZF_2024251
                             () => WriteOut(querrys.GetAllStockProduct(), "No products on stock.")
                         }
                     ),
-                    () => makeFood.Cook(CollectCookData(serviceProvider), serviceProvider.GetRequiredService<IRepository<Person>>().GetAll()),
-                    () => shopping.RestockProducts(CollectShoppingData(serviceProvider), serviceProvider.GetRequiredService<IRepository<Person>>().GetAll() ),
+                    () => makeFood.Cook(CollectCookData(middleMan), serviceProvider.GetRequiredService<IRepository<Person>>().GetAll()),
+                    () => shopping.RestockProducts(CollectShoppingData(middleMan), serviceProvider.GetRequiredService<IRepository<Person>>().GetAll() ),
                     () => { serviceProvider.GetRequiredService<IJsonRead>().SeedDatabase(); },
                     () => { BoolWrite("Exported succesfully","No products to export", querrys.ExportToTxt()); }, 
                     () => DisplayMenu(
@@ -146,15 +151,13 @@ namespace NLUG4F_HSZF_2024251
             );
         }
 
-        private static List<Product> CollectShoppingData(ServiceProvider serviceProvider)
+        private static List<Product> CollectShoppingData(Middleman mM)
         {
             Console.Clear();
             Console.WriteLine("Fetching all products...");
             List<Product> productsToUpdate = new List<Product>();
-            var productData = serviceProvider.GetRequiredService<IRepository<Product>>();
-            var peopleData = serviceProvider.GetRequiredService<IRepository<Person>>();
-            var products = productData.GetAll();
-            var people = peopleData.GetAll();
+            var products = mM.getAllProduct();
+            var people = mM.getAllPerson();
             WriteOut(products, "No products to show.");
 
             List<int> ids = products.Select(p => p.Id).ToList();
@@ -232,12 +235,11 @@ namespace NLUG4F_HSZF_2024251
             return productsToUpdate;
         }
 
-        private static List<Product> CollectCookData(ServiceProvider serviceProvider)
+        private static List<Product> CollectCookData(Middleman mM)
         {
             Console.Clear();
             List<Product> productsToUpdate = new List<Product>();
-            var helper = serviceProvider.GetRequiredService<IRepository<Product>>();
-            var products = helper.GetAll();
+            var products = mM.getAllProduct();
             if (products.Count > 0)
             {
                 List<int> ids = products.Select(p => p.Id).ToList();
